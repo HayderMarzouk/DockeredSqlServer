@@ -1,20 +1,16 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace DockeredSqlServer
+﻿namespace DockeredSqlServer
 {
     /// <summary>
     /// A hosted sql server implementation
     /// </summary>
     /// <seealso cref="Snal.Medical.Testing.SqlServerInstanceBase" />
-    internal class SqlServerHostedInstance : SqlServerInstanceBase
+    public class SqlServerHostedInstance : SqlServerInstanceBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="HostedSqlServerInstance"/> class.
+        /// Initializes a new instance of the <see cref="SqlServerHostedInstance"/> class.
         /// </summary>
-        /// <param name="instanceName">Name of the instance.</param>
-        /// <param name="adminUser">The admin user.</param>
-        /// <param name="adminPassword">The admin password.</param>
-        public SqlServerHostedInstance(SqlServerConfiguration config, ILogger<SqlServerHostedInstance> logger): base (config, logger)
+        /// <param name="config">The configuration.</param>
+        public SqlServerHostedInstance(SqlServerConfiguration config): base (config)
         {
 
         }

@@ -14,10 +14,13 @@ namespace DockeredSqlServer
     /// <seealso cref="System.IDisposable" />
     public abstract class SqlServerInstanceBase : IDisposable
     {
-        protected SqlServerInstanceBase(SqlServerConfiguration config, ILogger logger)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SqlServerInstanceBase"/> class.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        protected SqlServerInstanceBase(SqlServerConfiguration config)
         {
             Config = config;
-            Logger = logger;
         }
 
         /// <summary>

@@ -18,12 +18,12 @@ namespace DockeredSqlServer
     {
         private IContainerService? _container;
         private bool _dockerStarted;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDockeredInstance"/> class.
         /// </summary>
         /// <param name="config">The configuration.</param>
-        public SqlServerDockeredInstance(SqlServerConfiguration config, ILogger<SqlServerDockeredInstance> logger) : base(config, logger)
+        public SqlServerDockeredInstance(SqlServerConfiguration config) : base(config)
         {
 
         }
