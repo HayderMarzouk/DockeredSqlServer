@@ -18,16 +18,14 @@ namespace DockeredSqlServer
     {
         private IContainerService? _container;
         private bool _dockerStarted;
-        private DockeredSqlServerConfiguration _config;
-        private readonly ILogger<SqlServerDockeredInstance> _logger;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDockeredInstance"/> class.
         /// </summary>
         /// <param name="config">The configuration.</param>
-        public SqlServerDockeredInstance(DockeredSqlServerConfiguration config) : base(config)
+        public SqlServerDockeredInstance(SqlServerConfiguration config, ILogger<SqlServerDockeredInstance> logger) : base(config, logger)
         {
-            _config = config;
+
         }
         /// <summary>
         /// Starts this instance.
@@ -40,15 +38,15 @@ namespace DockeredSqlServer
             var dockerFileContent = File.ReadAllText(dockerFilePath);
 
             _container = Fd
-            .DefineImage(_config.DockerImageName)
+            .DefineImage(Config.DockerImageName)
                 .ReuseIfAlreadyExists()
                 .FromString(dockerFileContent)
                 .Builder()
 
             .UseContainer()
-                .UseImage(_config.DockerImageName)
-                .ExposePort(_config.Port, 1433)
-                .WithEnvironment("ACCEPT_EULA=Y", $"SA_PASSWORD={_config.AdminPassword}", "MSSQL_MEMORY_LIMIT_MB=4000")
+                .UseImage(Config.DockerImageName)
+                .ExposePort(Config.Port, 1433)
+                .WithEnvironment("ACCEPT_EULA=Y", $"SA_PASSWORD={Config.AdminPassword}", "MSSQL_MEMORY_LIMIT_MB=4000")
                 .Wait("sqlserver", (service, cnt) => {
                     if (cnt > 120)
                     {
@@ -77,19 +75,19 @@ namespace DockeredSqlServer
         private bool IsServerUp()
         {
             string sqlConnectionString = GetConnectionstring("master");
-            _logger.LogInformation("IsServerUp: Checking sql connection");
+            Logger.LogInformation("IsServerUp: Checking sql connection");
             try
             {
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     conn.Open();
                 }
-                _logger.LogInformation($"IsServerUp: Connection established");
+                Logger.LogInformation($"IsServerUp: Connection established");
                 return true;
             }
             catch
             {
-                _logger.LogWarning("IsServerUp: Connection failed");
+                Logger.LogWarning("IsServerUp: Connection failed");
                 return false;
             }
         }

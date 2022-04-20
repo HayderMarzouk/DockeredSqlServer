@@ -1,4 +1,6 @@
-﻿namespace DockeredSqlServer
+﻿using Microsoft.Extensions.Logging;
+
+namespace DockeredSqlServer
 {
     /// <summary>
     /// A hosted sql server implementation
@@ -12,7 +14,7 @@
         /// <param name="instanceName">Name of the instance.</param>
         /// <param name="adminUser">The admin user.</param>
         /// <param name="adminPassword">The admin password.</param>
-        public SqlServerHostedInstance(SqlServerConfiguration config): base (config)
+        public SqlServerHostedInstance(SqlServerConfiguration config, ILogger<SqlServerHostedInstance> logger): base (config, logger)
         {
 
         }

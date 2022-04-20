@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -13,12 +14,28 @@ namespace DockeredSqlServer
     /// <seealso cref="System.IDisposable" />
     public abstract class SqlServerInstanceBase : IDisposable
     {
-        private readonly SqlServerConfiguration _config;
-
-        protected SqlServerInstanceBase(SqlServerConfiguration config)
+        protected SqlServerInstanceBase(SqlServerConfiguration config, ILogger logger)
         {
-            _config = config;
+            Config = config;
+            Logger = logger;
         }
+
+        /// <summary>
+        /// Gets the logger.
+        /// </summary>
+        /// <value>
+        /// The logger.
+        /// </value>
+        protected ILogger Logger { get; }
+
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <value>
+        /// The configuration.
+        /// </value>
+        protected SqlServerConfiguration Config { get; }
+
         /// <summary>
         /// Starts this instance.
         /// </summary>
@@ -104,7 +121,7 @@ namespace DockeredSqlServer
         /// <returns></returns>
         public string GetConnectionstring(string database)
         {
-            return $"Server={_config.InstanceName},{_config.Port};Database={database};User ID={_config.AdminUserName};Password={_config.AdminPassword};";
+            return $"Server={Config.InstanceName},{Config.Port};Database={database};User ID={Config.AdminUserName};Password={Config.AdminPassword};";
         }
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

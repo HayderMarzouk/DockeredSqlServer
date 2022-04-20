@@ -6,6 +6,21 @@
     public class SqlServerConfiguration
     {
         /// <summary>
+        /// Gets or sets the mode.
+        /// </summary>
+        /// <value>
+        /// The mode.
+        /// </value>
+        public SqlServerModes Mode { get; set; }
+        /// <summary>
+        /// Gets or sets the name of the docker image.
+        /// </summary>
+        /// <value>
+        /// The name of the docker image.
+        /// </value>
+        public string? DockerImageName { get; set; }
+
+        /// <summary>
         /// Gets or sets the name of the instance.
         /// </summary>
         /// <value>
