@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DockeredSqlServer
@@ -22,15 +22,6 @@ namespace DockeredSqlServer
         {
             Config = config;
         }
-
-        /// <summary>
-        /// Gets the logger.
-        /// </summary>
-        /// <value>
-        /// The logger.
-        /// </value>
-        protected ILogger Logger { get; }
-
         /// <summary>
         /// Gets the configuration.
         /// </summary>
@@ -124,7 +115,23 @@ namespace DockeredSqlServer
         /// <returns></returns>
         public string GetConnectionstring(string database)
         {
-            return $"Server={Config.InstanceName},{Config.Port};Database={database};User ID={Config.AdminUserName};Password={Config.AdminPassword};";
+            StringBuilder result = new StringBuilder();
+            
+            result.AppendFormat("Server={0},{1};", Config.InstanceName, Config.Port);
+            result.AppendFormat("Database={0};", database);
+
+            if (Config.IntegratedSecrutity)
+            {
+                result.Append("Integrated Security=True;");
+            }
+            else
+            {
+                result.AppendFormat("User ID={0}:Password={1};", Config.AdminUserName, Config.AdminPassword);
+            }
+
+            result.Append("MultipleActiveResultSets=True;");
+            
+            return result.ToString();
         }
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

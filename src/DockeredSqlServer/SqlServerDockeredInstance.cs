@@ -1,7 +1,6 @@
 ﻿using Ductus.FluentDocker;
 using Ductus.FluentDocker.Common;
 using Ductus.FluentDocker.Services;
-using Microsoft.Extensions.Logging;
 using System.Data.SqlClient;
 using System.IO;
 using System.Reflection;
@@ -75,19 +74,16 @@ namespace DockeredSqlServer
         private bool IsServerUp()
         {
             string sqlConnectionString = GetConnectionstring("master");
-            Logger.LogInformation("IsServerUp: Checking sql connection");
             try
             {
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     conn.Open();
                 }
-                Logger.LogInformation($"IsServerUp: Connection established");
                 return true;
             }
             catch
             {
-                Logger.LogWarning("IsServerUp: Connection failed");
                 return false;
             }
         }

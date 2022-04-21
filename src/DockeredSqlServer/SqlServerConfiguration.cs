@@ -28,6 +28,10 @@
         /// </value>
         public string InstanceName { get; set; }
         /// <summary>
+        /// The integrated secrutity
+        /// </summary>
+        public bool IntegratedSecrutity { get; set; } = false;
+        /// <summary>
         /// Gets or sets the name of the admin user.
         /// </summary>
         /// <value>
