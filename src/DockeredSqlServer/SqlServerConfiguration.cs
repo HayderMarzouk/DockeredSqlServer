@@ -28,9 +28,9 @@
         /// </value>
         public string InstanceName { get; set; }
         /// <summary>
-        /// The integrated secrutity
+        /// The integrated security
         /// </summary>
-        public bool IntegratedSecrutity { get; set; } = false;
+        public bool IntegratedSecurity { get; set; } = false;
         /// <summary>
         /// Gets or sets the name of the admin user.
         /// </summary>
@@ -53,5 +53,16 @@
         /// The port. Default is 1433
         /// </value>
         public int Port { get; set; } = 1433;
+        /// <summary>
+        /// Time to wait in seconds 
+        /// </summary>
+        public int StartServerTimeOut { get; set; } = 120;
+        /// <summary>
+        /// Gets or sets the name of the container (optional).
+        /// </summary>
+        /// <value>
+        /// The name of the container.
+        /// </value>
+        public string? ContainerName { get; set; }
     }
 }

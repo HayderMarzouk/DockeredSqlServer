@@ -28,14 +28,5 @@
         {
             //Nothing to stop
         }
-
-        /// <summary>
-        /// Do nothing.
-        /// </summary>
-        /// <param name="databaseName">Name of the database.</param>
-        public override void CreateDatabase(string databaseName)
-        {
-            //Databases should be created manually
-        }
     }
 }

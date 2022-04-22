@@ -1,9 +1,7 @@
-﻿using Ductus.FluentDocker;
-using Ductus.FluentDocker.Common;
-using Ductus.FluentDocker.Services;
+﻿using Ductus.FluentDocker.Services;
+using System;
 using System.Data.SqlClient;
-using System.IO;
-using System.Reflection;
+using System.Threading;
 
 namespace DockeredSqlServer 
 { 
@@ -32,30 +30,40 @@ namespace DockeredSqlServer
         /// <exception cref="System.Exception">Cannot start mysql</exception>
         public override void Start()
         {
-            var currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var dockerFilePath = Path.Combine(currentDir, "Environment\\Resources\\Dockerfile");
-            var dockerFileContent = File.ReadAllText(dockerFilePath);
-
-            _container = Fd
-            .DefineImage(Config.DockerImageName)
-                .ReuseIfAlreadyExists()
-                .FromString(dockerFileContent)
-                .Builder()
-
-            .UseContainer()
+            var builder = new Ductus.FluentDocker.Builders.Builder()
+                .UseContainer()
                 .UseImage(Config.DockerImageName)
                 .ExposePort(Config.Port, 1433)
                 .WithEnvironment("ACCEPT_EULA=Y", $"SA_PASSWORD={Config.AdminPassword}", "MSSQL_MEMORY_LIMIT_MB=4000")
-                .Wait("sqlserver", (service, cnt) => {
-                    if (cnt > 120)
-                    {
-                        throw new FluentDockerException("Failed to wait for sqlserver service");
-                    }
-                    return IsServerUp()? 0 : 2000;
-                })
-                .Build().Start();
+                .WaitForPort($"1433/tcp", 60000 /*60s*/);
+
+            if (!string.IsNullOrWhiteSpace(Config.ContainerName))
+            {
+                builder.WithName(Config.ContainerName);
+            }
+            
+            _container = builder.Build()
+                        .Start();
 
             _dockerStarted = true;
+
+            //Wait for server to start (max 60s)
+            bool serverStarted = false;
+            for (int i = 0; i < Config.StartServerTimeOut /2; i++)
+            {
+                if (IsServerUp())
+                {
+                    serverStarted = true;
+                    break;
+                }
+                Thread.Sleep(2000);
+            }
+
+            if (!serverStarted)
+            {
+                Stop();
+                throw new Exception("Cannot start Sql server instance in 120 seconds");
+            }
         }
        
 
@@ -73,7 +81,7 @@ namespace DockeredSqlServer
 
         private bool IsServerUp()
         {
-            string sqlConnectionString = GetConnectionstring("master");
+            string sqlConnectionString = Config.BuildConnectionString("master");
             try
             {
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
