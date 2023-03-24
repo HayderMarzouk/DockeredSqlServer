@@ -35,7 +35,7 @@ namespace DockeredSqlServer
                 .UseImage(Config.DockerImageName)
                 .ExposePort(Config.Port, 1433)
                 .WithEnvironment("ACCEPT_EULA=Y", $"SA_PASSWORD={Config.AdminPassword}", "MSSQL_MEMORY_LIMIT_MB=4000")
-                .WaitForPort($"1433/tcp", 60000 /*60s*/);
+                .WaitForPort($"1433/tcp", TimeSpan.FromSeconds(60), "127.0.0.1");
 
             if (!string.IsNullOrWhiteSpace(Config.ContainerName))
             {
